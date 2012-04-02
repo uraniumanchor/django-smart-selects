@@ -14,6 +14,7 @@ def filterchain(request, app, model, field, value, manager=None):
         queryset = getattr(Model, manager).all()
     else:
         queryset = Model.objects
+    print keywords
     results = list(queryset.filter(**keywords))
     results.sort(cmp=locale.strcoll, key=lambda x:unicode_sorter(unicode(x)))
     result = []
@@ -22,6 +23,26 @@ def filterchain(request, app, model, field, value, manager=None):
     json = simplejson.dumps(result)
     return HttpResponse(json, mimetype='application/json')
 
+def filtersubchain(request, app, model, field, submodel, subfield, value, manager=None):
+	Model = get_model(app,model)
+	SubModel = get_model(app,submodel)
+	subobj = SubModel.objects.get(pk=value)
+	if manager is not None and hasattr(Model, manager):
+		queryset = getattr(Model, manager).all()
+	else:
+		queryset = Model.objects
+	lastobj = getattr(subobj,subfield)
+	if value == '0':
+		keywords = {str("%s__isnull" % field):True}
+	else:
+		keywords = {str(field): str(lastobj.pk)}
+	results = list(queryset.filter(**keywords))
+	result = []
+	for item in results:
+		result.append({'value':item.pk, 'display':unicode(item)})
+	json = simplejson.dumps(result)
+	return HttpResponse(json, mimetype='application/json')
+	
 def filterchain_all(request, app, model, field, value):
     Model = get_model(app, model)
     if value == '0':

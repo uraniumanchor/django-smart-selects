@@ -5,9 +5,9 @@ from django.db.models import get_model
 
 
 class ChainedModelChoiceField(ModelChoiceField):
-    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, initial=None, *args, **kwargs):
+    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, initial=None, sub_model_name=None, sub_field=None, *args, **kwargs):
         defaults = {
-            'widget': ChainedSelect(app_name, model_name, chain_field, model_field, show_all, auto_choose, manager),
+            'widget': ChainedSelect(app_name, model_name, chain_field, model_field, show_all, auto_choose, manager, sub_model_name, sub_field),
         }
         defaults.update(kwargs)
         if not 'queryset' in kwargs:
@@ -40,7 +40,9 @@ class GroupedModelSelect(ModelChoiceField):
         # accessed) so that we can ensure the QuerySet has not been consumed. This
         # construct might look complicated but it allows for lazy evaluation of
         # the queryset.
-        final = [("", self.empty_label or "---------"), ]
+        final = []
+        if not self.is_required:
+            final.append(("", self.empty_label or "---------"))
         group = None
         for item in self.queryset:
             if not group or group[0] != unicode(getattr(item, self.order_field)):

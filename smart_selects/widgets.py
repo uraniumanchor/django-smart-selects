@@ -18,7 +18,7 @@ else:
 
 
 class ChainedSelect(Select):
-    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, *args, **kwargs):
+    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, sub_model_name=None, sub_field=None, *args, **kwargs):
         self.app_name = app_name
         self.model_name = model_name
         self.chain_field = chain_field
@@ -26,6 +26,8 @@ class ChainedSelect(Select):
         self.show_all = show_all
         self.auto_choose = auto_choose
         self.manager = manager
+        self.sub_model_name = sub_model_name
+        self.sub_field = sub_field
         super(Select, self).__init__(*args, **kwargs)
 
     class Media:
@@ -43,11 +45,14 @@ class ChainedSelect(Select):
         else:
             chain_field = self.chain_field
 
-        if self.show_all:
+        kwargs = {'app':self.app_name, 'model':self.model_name, 'field':self.model_field, 'value':"1"}
+        if self.sub_model_name:
+            view_name = "chained_subfilter"
+            kwargs.update({'submodel':self.sub_model_name, 'subfield':self.sub_field})
+        elif self.show_all:
             view_name = "chained_filter_all"
         else:
             view_name = "chained_filter"
-        kwargs = {'app':self.app_name, 'model':self.model_name, 'field':self.model_field, 'value':"1"}
         if self.manager is not None:
             kwargs.update({'manager': self.manager})
         url = "/".join(reverse(view_name, kwargs=kwargs).split("/")[:-2])
