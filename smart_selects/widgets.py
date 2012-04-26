@@ -18,7 +18,7 @@ else:
 
 
 class ChainedSelect(Select):
-    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, sub_model_name=None, sub_field=None, *args, **kwargs):
+    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, chained_model=None, *args, **kwargs):
         self.app_name = app_name
         self.model_name = model_name
         self.chain_field = chain_field
@@ -26,8 +26,7 @@ class ChainedSelect(Select):
         self.show_all = show_all
         self.auto_choose = auto_choose
         self.manager = manager
-        self.sub_model_name = sub_model_name
-        self.sub_field = sub_field
+        self.chained_model = chained_model
         super(Select, self).__init__(*args, **kwargs)
 
     class Media:
@@ -46,9 +45,9 @@ class ChainedSelect(Select):
             chain_field = self.chain_field
 
         kwargs = {'app':self.app_name, 'model':self.model_name, 'field':self.model_field, 'value':"1"}
-        if self.sub_model_name:
-            view_name = "chained_subfilter"
-            kwargs.update({'submodel':self.sub_model_name, 'subfield':self.sub_field})
+        if self.chained_model:
+            view_name = "chained_chain"
+            kwargs.update({'models':self.chained_model})
         elif self.show_all:
             view_name = "chained_filter_all"
         else:

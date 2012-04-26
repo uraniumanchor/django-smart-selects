@@ -5,9 +5,9 @@ from django.db.models import get_model
 
 
 class ChainedModelChoiceField(ModelChoiceField):
-    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, initial=None, sub_model_name=None, sub_field=None, *args, **kwargs):
+    def __init__(self, app_name, model_name, chain_field, model_field, show_all, auto_choose, manager=None, initial=None, chained_model=None, *args, **kwargs):
         defaults = {
-            'widget': ChainedSelect(app_name, model_name, chain_field, model_field, show_all, auto_choose, manager, sub_model_name, sub_field),
+            'widget': ChainedSelect(app_name, model_name, chain_field, model_field, show_all, auto_choose, manager, chained_model),
         }
         defaults.update(kwargs)
         if not 'queryset' in kwargs:
