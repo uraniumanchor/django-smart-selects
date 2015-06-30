@@ -1,8 +1,11 @@
+import locale
+
 from django.db.models import get_model
 from django.http import HttpResponse
 from django.utils import simplejson
-import locale
+
 from smart_selects.utils import unicode_sorter
+
 
 def chainchain(request, app, model, field, models, value, manager=None):
     Models = models.split('.')
@@ -38,7 +41,7 @@ def filterchain(request, app, model, field, value, manager=None):
         result.append({'value':item.pk, 'display':unicode(item)})
     json = simplejson.dumps(result)
     return HttpResponse(json, mimetype='application/json')
-	
+
 def filterchain_all(request, app, model, field, value):
     Model = get_model(app, model)
     if value == '0':

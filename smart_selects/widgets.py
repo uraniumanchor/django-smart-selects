@@ -1,11 +1,12 @@
+import locale
+
 import django
 from django.conf import settings
 from django.forms.widgets import Select
 from django.core.urlresolvers import reverse
-from django.utils.encoding import iri_to_uri
 from django.utils.safestring import mark_safe
 from django.db.models import get_model
-import locale
+
 from smart_selects.utils import unicode_sorter
 
 

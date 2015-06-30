@@ -1,5 +1,7 @@
 from django.db.models.fields.related import ForeignKey
+
 import form_fields
+
 try:
     from south.modelsinspector import add_introspection_rules
     has_south = True
